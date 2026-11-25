@@ -18,11 +18,29 @@ class AuthGate extends StatefulWidget {
   State<AuthGate> createState() => _AuthGateState();
 }
 
-class _AuthGateState extends State<AuthGate> {
+class _AuthGateState extends State<AuthGate> with SingleTickerProviderStateMixin {
+  // A small one-shot "pop in" for the splash logo - finite (not a
+  // repeating loop), so it can't keep the screen animating forever if
+  // the session check is unusually slow, and settles cleanly in tests.
+  late final AnimationController _logoController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 520),
+  )..forward();
+  late final Animation<double> _logoScale = CurvedAnimation(
+    parent: _logoController,
+    curve: Curves.elasticOut,
+  );
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkSession());
+  }
+
+  @override
+  void dispose() {
+    _logoController.dispose();
+    super.dispose();
   }
 
   Future<void> _checkSession() async {
@@ -37,9 +55,14 @@ class _AuthGateState extends State<AuthGate> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.purplePrimary,
-      body: Center(child: AppLogo(size: 88)),
+      body: Center(
+        child: ScaleTransition(
+          scale: _logoScale,
+          child: const AppLogo(size: 88),
+        ),
+      ),
     );
   }
 }

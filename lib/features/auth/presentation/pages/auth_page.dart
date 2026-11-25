@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:alvaro_pay/core/di/injection_container.dart';
-import 'package:alvaro_pay/core/utils/validators.dart';
 import 'package:alvaro_pay/core/utils/page_transitions.dart';
+import 'package:alvaro_pay/core/utils/validators.dart';
 import 'package:alvaro_pay/core/widgets/app_logo.dart';
-import 'package:alvaro_pay/core/widgets/wallet_card_illustration.dart';
 import 'package:alvaro_pay/core/widgets/app_primary_button.dart';
 import 'package:alvaro_pay/core/widgets/app_text_field.dart';
+import 'package:alvaro_pay/core/widgets/fade_slide_in.dart';
+import 'package:alvaro_pay/core/widgets/wallet_card_illustration.dart';
 import 'package:alvaro_pay/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:alvaro_pay/features/auth/presentation/bloc/auth_event.dart';
 import 'package:alvaro_pay/features/auth/presentation/bloc/auth_state.dart';
@@ -46,6 +47,8 @@ class _AuthViewState extends State<_AuthView> {
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
+
+  static const Duration _fieldAnimDuration = Duration(milliseconds: 220);
 
   @override
   void dispose() {
@@ -98,6 +101,30 @@ class _AuthViewState extends State<_AuthView> {
     }
   }
 
+  // Grows/shrinks and fades the sign-up-only fields in and out as the
+  // mode is toggled, instead of them just snapping in and out of the
+  // layout. `padding` reserves the same gap the field would occupy
+  // when visible (above or below it), so the surrounding spacing stays
+  // identical to a plain conditional field once it's shown.
+  Widget _animatedField({
+    required bool visible,
+    required Widget field,
+    required EdgeInsetsGeometry padding,
+  }) {
+    return AnimatedSize(
+      duration: _fieldAnimDuration,
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.topCenter,
+      child: AnimatedOpacity(
+        duration: _fieldAnimDuration,
+        opacity: visible ? 1 : 0,
+        child: visible
+            ? Padding(padding: padding, child: field)
+            : const SizedBox(width: double.infinity),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
@@ -127,35 +154,54 @@ class _AuthViewState extends State<_AuthView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  const WalletCardIllustration(),
-                  const SizedBox(height: 20),
-                  const Center(child: AppLogo()),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.appName,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium,
+                  FadeSlideIn(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        const WalletCardIllustration(),
+                        const SizedBox(height: 20),
+                        const Center(child: AppLogo()),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.appName,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 32),
-                  Text(
-                    state.isLogin ? l10n.loginWelcomeTitle : l10n.signUpWelcomeTitle,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    state.isLogin ? l10n.loginWelcomeSubtitle : l10n.signUpWelcomeSubtitle,
-                    style: Theme.of(context).textTheme.bodySmall,
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 260),
+                    transitionBuilder: (child, animation) =>
+                        FadeTransition(opacity: animation, child: child),
+                    child: Column(
+                      key: ValueKey<AuthFormMode>(state.mode),
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Text(
+                          state.isLogin ? l10n.loginWelcomeTitle : l10n.signUpWelcomeTitle,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          state.isLogin ? l10n.loginWelcomeSubtitle : l10n.signUpWelcomeSubtitle,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 24),
-                  if (!state.isLogin) ...<Widget>[
-                    AppTextField(
+                  _animatedField(
+                    visible: !state.isLogin,
+                    padding: const EdgeInsets.only(bottom: 16),
+                    field: AppTextField(
                       label: l10n.fullNameLabel,
                       controller: _fullNameController,
                       errorText: _fullNameError,
                       prefixIcon: Icons.person_outline_rounded,
                     ),
-                    const SizedBox(height: 16),
-                  ],
+                  ),
                   AppTextField(
                     label: l10n.emailLabel,
                     controller: _emailController,
@@ -171,16 +217,17 @@ class _AuthViewState extends State<_AuthView> {
                     errorText: _passwordError,
                     prefixIcon: Icons.lock_outline_rounded,
                   ),
-                  if (!state.isLogin) ...<Widget>[
-                    const SizedBox(height: 16),
-                    AppTextField(
+                  _animatedField(
+                    visible: !state.isLogin,
+                    padding: const EdgeInsets.only(top: 16),
+                    field: AppTextField(
                       label: l10n.confirmPasswordLabel,
                       controller: _confirmPasswordController,
                       obscureText: true,
                       errorText: _confirmPasswordError,
                       prefixIcon: Icons.lock_outline_rounded,
                     ),
-                  ],
+                  ),
                   const SizedBox(height: 28),
                   AppPrimaryButton(
                     label: state.isLogin ? l10n.loginButton : l10n.signUpButton,

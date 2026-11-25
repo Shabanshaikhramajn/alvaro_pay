@@ -363,6 +363,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bill paid successfully'**
   String get payBillSuccessMessage;
+
+  /// No description provided for @invalidPhoneError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid phone number'**
+  String get invalidPhoneError;
+
+  /// No description provided for @invalidRecipientError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email or phone number'**
+  String get invalidRecipientError;
+
+  /// No description provided for @amountExceedsBalanceError.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount exceeds your available balance'**
+  String get amountExceedsBalanceError;
+
+  /// No description provided for @successSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All done!'**
+  String get successSheetTitle;
+
+  /// No description provided for @recentActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent activity'**
+  String get recentActivityTitle;
+
+  /// No description provided for @seeAllAction.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAllAction;
+
+  /// No description provided for @transactionHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction history'**
+  String get transactionHistoryTitle;
+
+  /// No description provided for @historyEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet'**
+  String get historyEmptyTitle;
+
+  /// No description provided for @historyEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your sent money, airtime and bill payments will show up here.'**
+  String get historyEmptySubtitle;
+
+  /// No description provided for @transactionSentToLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {recipient}'**
+  String transactionSentToLabel(String recipient);
+
+  /// No description provided for @transactionAirtimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Airtime/data for {recipient}'**
+  String transactionAirtimeLabel(String recipient);
+
+  /// No description provided for @transactionBillLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill payment to {recipient}'**
+  String transactionBillLabel(String recipient);
 }
 
 class _AppLocalizationsDelegate

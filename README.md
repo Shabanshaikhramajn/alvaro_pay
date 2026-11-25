@@ -5,6 +5,53 @@ money, buy airtime/data, or pay a bill from a wallet home screen. It's a
 mock backend (in-memory, no real server) built to show the architecture,
 not a production payment app.
 
+## Why this project exists
+
+This isn't meant to be a real payments app - there's no server, no real
+money movement, and no persistence beyond a single device's local
+storage. The point of it is to show, in a small enough codebase to read
+in one sitting, how a Flutter app can be structured so that:
+
+- the business rules (what counts as a valid transfer, what "insufficient
+  balance" means) live in plain Dart with no Flutter or UI code mixed in,
+  so they could be unit-tested or reused without a screen at all;
+- the UI layer (pages, widgets) only ever talks to a Bloc, never
+  directly to a data source or a mock "backend" - so swapping the mock
+  for a real API later would mean touching the `data/` layer only, not
+  the screens;
+- every piece of UI (buttons, text fields, icon badges, the balance
+  card) is a small reusable widget rather than copy-pasted markup, and
+  every string and color comes from one place (localization files, the
+  theme) instead of being hardcoded per screen.
+
+In short: it's a worked example of Clean Architecture + BLoC on a
+feature set (auth, a wallet, three kinds of payment action, history)
+that's realistic enough to show the pattern paying off, without the size
+of an actual production app.
+
+## Walkthrough
+
+1. **Login / Sign up** - one screen, switching between the two modes in
+   place rather than navigating to a separate page. Sign up asks for a
+   full name and a confirmed password; both modes validate email format
+   and a minimum password length before ever contacting the (mock)
+   backend.
+2. **Wallet home** - once logged in, this is the main screen: your
+   balance, three quick actions (Send Money, Buy Airtime/Data, Pay
+   Bills), and a short list of your most recent transactions.
+3. **Send Money / Buy Airtime / Pay Bills** - each is its own small form.
+   They all follow the same shape (fill in a form, submit, see a loading
+   state, then success or a clear error) but validate different things:
+   a recipient (email or phone) for Send Money, a phone number for Buy
+   Airtime, a biller + account number for Pay Bills - and all three
+   check the amount against your current balance before submitting.
+4. **Transaction history** - every successful action from step 3 is
+   recorded and shown here, newest first, with its type, counterpart,
+   amount and time.
+5. Close the app and reopen it: you're taken straight back to the
+   wallet home screen, because your session was remembered. Log out
+   from the wallet screen's app bar to clear it and return to step 1.
+
 ## What's in it
 
 - **Login / sign up** on one screen, switching mode in place, with a
@@ -31,6 +78,13 @@ not a production payment app.
 - Premium-style icon badges (`IconBadge`) are used consistently for
   quick actions and transaction rows, and screen-to-screen navigation
   uses a soft fade/slide-up transition instead of the platform default.
+- Elements on the wallet home and login/sign-up screens fade and slide
+  into place on first appearance (staggered, via a small reusable
+  `FadeSlideIn` widget), new transaction rows animate in individually
+  rather than the whole list refreshing at once, the balance figure
+  counts up/down whenever it changes instead of jumping straight to the
+  new number, and the sign-up-only fields grow/shrink and fade in and
+  out when you switch between Log in and Sign up.
 - All text goes through Flutter's localization system (ARB files), and
   all colors go through one theme file - nothing is hardcoded in the
   screens themselves.

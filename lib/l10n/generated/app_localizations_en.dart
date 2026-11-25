@@ -142,4 +142,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get payBillSuccessMessage => 'Bill paid successfully';
+
+  @override
+  String get invalidPhoneError => 'Enter a valid phone number';
+
+  @override
+  String get invalidRecipientError => 'Enter a valid email or phone number';
+
+  @override
+  String get amountExceedsBalanceError =>
+      'Amount exceeds your available balance';
+
+  @override
+  String get successSheetTitle => 'All done!';
+
+  @override
+  String get recentActivityTitle => 'Recent activity';
+
+  @override
+  String get seeAllAction => 'See all';
+
+  @override
+  String get transactionHistoryTitle => 'Transaction history';
+
+  @override
+  String get historyEmptyTitle => 'No transactions yet';
+
+  @override
+  String get historyEmptySubtitle =>
+      'Your sent money, airtime and bill payments will show up here.';
+
+  @override
+  String transactionSentToLabel(String recipient) {
+    return 'Sent to $recipient';
+  }
+
+  @override
+  String transactionAirtimeLabel(String recipient) {
+    return 'Airtime/data for $recipient';
+  }
+
+  @override
+  String transactionBillLabel(String recipient) {
+    return 'Bill payment to $recipient';
+  }
 }

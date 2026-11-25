@@ -5,6 +5,7 @@ import 'package:alvaro_pay/core/di/injection_container.dart';
 import 'package:alvaro_pay/core/theme/app_colors.dart';
 import 'package:alvaro_pay/core/utils/page_transitions.dart';
 import 'package:alvaro_pay/core/widgets/balance_card.dart';
+import 'package:alvaro_pay/core/widgets/fade_slide_in.dart';
 import 'package:alvaro_pay/core/widgets/wallet_action_button.dart';
 import 'package:alvaro_pay/features/auth/domain/usecases/clear_session_usecase.dart';
 import 'package:alvaro_pay/features/auth/presentation/pages/auth_page.dart';
@@ -72,9 +73,6 @@ class _WalletHomeView extends StatelessWidget {
       body: BlocBuilder<WalletBloc, WalletState>(
         builder: (context, state) {
           final wallet = state.wallet;
-          final String balanceText = wallet == null
-              ? '--'
-              : '${wallet.currencySymbol}${wallet.balance.toStringAsFixed(2)}';
           final String currencySymbol = wallet?.currencySymbol ?? '';
           final recentTransactions = state.transactions.take(3).toList();
 
@@ -91,56 +89,68 @@ class _WalletHomeView extends StatelessWidget {
                     child: Center(child: CircularProgressIndicator()),
                   )
                 else
-                  BalanceCard(
-                    label: l10n.availableBalanceLabel,
-                    balanceText: balanceText,
-                    isBalanceVisible: state.isBalanceVisible,
-                    visibilityTooltip: state.isBalanceVisible
-                        ? l10n.hideBalanceTooltip
-                        : l10n.showBalanceTooltip,
-                    onToggleVisibility: () =>
-                        context.read<WalletBloc>().add(const WalletBalanceVisibilityToggled()),
+                  FadeSlideIn(
+                    child: BalanceCard(
+                      label: l10n.availableBalanceLabel,
+                      balance: wallet?.balance,
+                      currencySymbol: currencySymbol,
+                      isBalanceVisible: state.isBalanceVisible,
+                      visibilityTooltip: state.isBalanceVisible
+                          ? l10n.hideBalanceTooltip
+                          : l10n.showBalanceTooltip,
+                      onToggleVisibility: () =>
+                          context.read<WalletBloc>().add(const WalletBalanceVisibilityToggled()),
+                    ),
                   ),
                 const SizedBox(height: 28),
-                Text(l10n.quickActionsTitle, style: Theme.of(context).textTheme.titleLarge),
+                FadeSlideIn(
+                  delay: const Duration(milliseconds: 80),
+                  child: Text(l10n.quickActionsTitle, style: Theme.of(context).textTheme.titleLarge),
+                ),
                 const SizedBox(height: 14),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: WalletActionButton(
-                        icon: Icons.send_rounded,
-                        label: l10n.sendMoneyAction,
-                        onTap: () => _openPage(context, const SendMoneyPage()),
+                FadeSlideIn(
+                  delay: const Duration(milliseconds: 120),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: WalletActionButton(
+                          icon: Icons.send_rounded,
+                          label: l10n.sendMoneyAction,
+                          onTap: () => _openPage(context, const SendMoneyPage()),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: WalletActionButton(
-                        icon: Icons.sim_card_rounded,
-                        label: l10n.buyAirtimeAction,
-                        onTap: () => _openPage(context, const BuyAirtimePage()),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: WalletActionButton(
+                          icon: Icons.sim_card_rounded,
+                          label: l10n.buyAirtimeAction,
+                          onTap: () => _openPage(context, const BuyAirtimePage()),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: WalletActionButton(
-                        icon: Icons.receipt_long_rounded,
-                        label: l10n.payBillsAction,
-                        onTap: () => _openPage(context, const PayBillPage()),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: WalletActionButton(
+                          icon: Icons.receipt_long_rounded,
+                          label: l10n.payBillsAction,
+                          onTap: () => _openPage(context, const PayBillPage()),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 28),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(l10n.recentActivityTitle, style: Theme.of(context).textTheme.titleLarge),
-                    TextButton(
-                      onPressed: () => _openPage(context, const TransactionHistoryPage()),
-                      child: Text(l10n.seeAllAction),
-                    ),
-                  ],
+                FadeSlideIn(
+                  delay: const Duration(milliseconds: 160),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(l10n.recentActivityTitle, style: Theme.of(context).textTheme.titleLarge),
+                      TextButton(
+                        onPressed: () => _openPage(context, const TransactionHistoryPage()),
+                        child: Text(l10n.seeAllAction),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 4),
                 if (recentTransactions.isEmpty)
@@ -154,10 +164,20 @@ class _WalletHomeView extends StatelessWidget {
                 else
                   Column(
                     children: <Widget>[
-                      for (final transaction in recentTransactions)
-                        TransactionTile(
-                          transaction: transaction,
-                          currencySymbol: currencySymbol,
+                      for (final (index, transaction) in recentTransactions.indexed)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: FadeSlideIn(
+                            // Keyed by transaction id: a brand new entry (freshly
+                            // inserted at the top) mounts fresh and animates in,
+                            // while existing ones keep their already-settled state.
+                            key: ValueKey<String>(transaction.id),
+                            delay: Duration(milliseconds: 180 + index * 50),
+                            child: TransactionTile(
+                              transaction: transaction,
+                              currencySymbol: currencySymbol,
+                            ),
+                          ),
                         ),
                     ],
                   ),

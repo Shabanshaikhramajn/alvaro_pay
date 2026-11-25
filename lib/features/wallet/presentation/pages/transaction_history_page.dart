@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:alvaro_pay/core/widgets/fade_slide_in.dart';
 import 'package:alvaro_pay/features/wallet/presentation/bloc/wallet_bloc.dart';
 import 'package:alvaro_pay/features/wallet/presentation/bloc/wallet_event.dart';
 import 'package:alvaro_pay/features/wallet/presentation/bloc/wallet_state.dart';
@@ -55,10 +56,22 @@ class TransactionHistoryPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               itemCount: state.transactions.length,
               separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (context, index) => TransactionTile(
-                transaction: state.transactions[index],
-                currencySymbol: currencySymbol,
-              ),
+              itemBuilder: (context, index) {
+                final transaction = state.transactions[index];
+                // Stagger capped at the first handful of rows so a long
+                // history doesn't make the bottom of the list wait ages
+                // to appear; a key per transaction id means only a
+                // newly-added row (not already-seen ones) animates in.
+                final int staggerIndex = index < 8 ? index : 8;
+                return FadeSlideIn(
+                  key: ValueKey<String>(transaction.id),
+                  delay: Duration(milliseconds: 40 * staggerIndex),
+                  child: TransactionTile(
+                    transaction: transaction,
+                    currencySymbol: currencySymbol,
+                  ),
+                );
+              },
             ),
           );
         },
