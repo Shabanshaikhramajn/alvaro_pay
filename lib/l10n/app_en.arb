@@ -1,0 +1,75 @@
+{
+  "@@locale": "en",
+  "appName": "Alvaro Pay",
+  "loginWelcomeTitle": "Welcome back",
+  "loginWelcomeSubtitle": "Log in to continue to your wallet",
+  "signUpWelcomeTitle": "Create your account",
+  "signUpWelcomeSubtitle": "Sign up to start using Alvaro Pay",
+  "fullNameLabel": "Full name",
+  "emailLabel": "Email address",
+  "passwordLabel": "Password",
+  "confirmPasswordLabel": "Confirm password",
+  "loginButton": "Log in",
+  "signUpButton": "Create account",
+  "switchToSignUpPrompt": "Don't have an account?",
+  "switchToSignUpAction": "Sign up",
+  "switchToLoginPrompt": "Already have an account?",
+  "switchToLoginAction": "Log in",
+  "fieldRequiredError": "This field is required",
+  "invalidEmailError": "Enter a valid email address",
+  "passwordTooShortError": "Password must be at least 6 characters",
+  "passwordMismatchError": "Passwords don't match",
+  "loginSuccessMessage": "Welcome back!",
+  "signUpSuccessMessage": "Account created! You're all set.",
+  "walletHomeTitle": "My Wallet",
+  "availableBalanceLabel": "Available balance",
+  "hideBalanceTooltip": "Hide balance",
+  "showBalanceTooltip": "Show balance",
+  "quickActionsTitle": "Quick actions",
+  "sendMoneyAction": "Send Money",
+  "buyAirtimeAction": "Buy Airtime/Data",
+  "payBillsAction": "Pay Bills",
+  "logoutTooltip": "Log out",
+  "sendMoneyTitle": "Send Money",
+  "recipientLabel": "Recipient (phone or email)",
+  "amountLabel": "Amount",
+  "sendMoneyButton": "Send",
+  "sendMoneySuccessMessage": "Money sent successfully",
+  "invalidAmountError": "Enter a valid amount",
+  "buyAirtimeTitle": "Buy Airtime/Data",
+  "phoneNumberLabel": "Phone number",
+  "buyAirtimeButton": "Buy now",
+  "buyAirtimeSuccessMessage": "Airtime/data purchase successful",
+  "payBillsTitle": "Pay Bills",
+  "billerLabel": "Biller",
+  "accountNumberLabel": "Account / meter number",
+  "payBillButton": "Pay bill",
+  "payBillSuccessMessage": "Bill paid successfully",
+  "invalidPhoneError": "Enter a valid phone number",
+  "invalidRecipientError": "Enter a valid email or phone number",
+  "amountExceedsBalanceError": "Amount exceeds your available balance",
+  "successSheetTitle": "All done!",
+  "recentActivityTitle": "Recent activity",
+  "seeAllAction": "See all",
+  "transactionHistoryTitle": "Transaction history",
+  "historyEmptyTitle": "No transactions yet",
+  "historyEmptySubtitle": "Your sent money, airtime and bill payments will show up here.",
+  "transactionSentToLabel": "Sent to {recipient}",
+  "@transactionSentToLabel": {
+    "placeholders": {
+      "recipient": {"type": "String"}
+    }
+  },
+  "transactionAirtimeLabel": "Airtime/data for {recipient}",
+  "@transactionAirtimeLabel": {
+    "placeholders": {
+      "recipient": {"type": "String"}
+    }
+  },
+  "transactionBillLabel": "Bill payment to {recipient}",
+  "@transactionBillLabel": {
+    "placeholders": {
+      "recipient": {"type": "String"}
+    }
+  }
+}
