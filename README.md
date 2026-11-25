@@ -180,14 +180,3 @@ flutter test
 - `test/widget_test.dart` - a smoke test that the app launches to the
   login screen (with `SharedPreferences.setMockInitialValues({})` so
   `AuthGate`'s session check resolves to "no user" immediately).
-
-## A note on how this was built
-
-I don't have a working Flutter/Dart setup in the environment I wrote
-this in, so none of it has been compiled or run yet. Every file was
-checked by hand and with scripts that verify imports resolve,
-brackets/braces/parens line up, there are no duplicate class/enum
-names, and every localization key used in the code exists in
-`app_en.arb` (and vice versa) - but that's not a substitute for actually
-running `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, and
-`flutter test` yourself before relying on it.
