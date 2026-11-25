@@ -52,6 +52,12 @@ of an actual production app.
    wallet home screen, because your session was remembered. Log out
    from the wallet screen's app bar to clear it and return to step 1.
 
+## Screenshots
+
+| Sign up | Log in | Wallet home |
+| --- | --- | --- |
+| ![Sign up screen](screenshots/signup_screen.jpg) | ![Login screen](screenshots/login_screen.jpg) | ![Wallet home screen](screenshots/wallet_home_screen.jpg) |
+
 ## What's in it
 
 - **Login / sign up** on one screen, switching mode in place, with a
